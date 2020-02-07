@@ -1,0 +1,12 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^Makefile$
+^Readme\\.$
+^README\..*$
+
+## Temporary folder
+^tmp$
+^temp$
+
+## Example Data Folder
+^inst/0.raw.data$
