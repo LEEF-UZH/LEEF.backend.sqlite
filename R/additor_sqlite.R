@@ -52,7 +52,10 @@ additor_sqlite <- function(
 
   for (tbl in table_names) {
     if (
-      (!DBI::dbExistsTable( conn = DATA_options("data_connection"), name = tbl ) ) &
+      (!DBI::dbExistsTable(
+        conn = getOption("LEEF.Data.status")$data_connection,
+        name = tbl
+      ) ) &
       (!create_new_table)
     ) {
       stop("Table '", tbl, "' does not exist!", "\n", "If you want to create the table, set 'create_new_table = TRUE' when calling 'write_new_table!")
