@@ -9,9 +9,14 @@
 #' @export
 #'
 #' @examples
-run_add_new_data_to_db <- function(
+additor_sqlite <- function(
+  input,
+  output,
   create_new_table = FALSE
 ){
+  new_data_pattern <- "\\.rds"
+
+
   stop( "TODO to be implemented!" )
 
   closeAgain <- FALSE
@@ -19,27 +24,28 @@ run_add_new_data_to_db <- function(
   on.exit(
     {
       if (closeAgain) {
-        db_disconnect_data()
+        sqlite_disconnect()
       }
     }
   )
 
 # Check if connection should be closed again ------------------------------
 
-  if (is.null(DATA_options("data_connection"))) {
-    db_connect_data()
+
+  if ( is.null(getOption("LEEF.Data.status")$data_connection) ) {
+    sqlite_connect()
     closeAgain <- TRUE
   }
 
+
 # Get new_data file names, extension and path -----------------------------
 
-  to_be_imported <-  DATA_options("to_be_imported")
-  table_names <- list.files( path = to_be_imported, pattern = new_data_extension )
-  table_names <- gsub(new_data_extension, "", table_names)
 
-  if ( !file.exists( file.path( to_be_imported, "hash.sha256") ) ) {
-    stop("The new data has not been hashed - please run `hash_new_data() before running this command!")
-  }
+  table_names <- list.files(
+    path = input,
+    pattern = new_data_pattern
+  )
+  table_names <- gsub(new_data_pattern, "", table_names)
 
 
 # Check if table exists ---------------------------------------------------

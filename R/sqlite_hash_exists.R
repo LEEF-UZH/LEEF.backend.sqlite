@@ -9,24 +9,29 @@
 #' @export
 #'
 #' @examples
-db_hash_exists <- function(
+sqlite_hash_exists <- function(
   table,
   hash
 ){
+  closeAgain <- FALSE
+
   on.exit(
     {
       if (closeAgain) {
-        db_disconnect_data()
+        sqlite_disconnect()
       }
     }
   )
-# Check if connection should be closed again ------------------------------
 
-  closeAgain <- FALSE
-  if (is.null(DATA_options("data_connection"))) {
-    db_connect_data()
+  # Check if connection should be closed again ------------------------------
+
+  if ( is.null(getOption("LEEF.Data.status")$data_connection) ) {
+    sqlite_connect()
     closeAgain <- TRUE
   }
+
+
+
   if (length(table) != 1) {
     stop("table has to have a length of one")
   }
@@ -34,10 +39,10 @@ db_hash_exists <- function(
   result <- sapply(
     hash,
     function(i) {
-      i %in% dbGetQuery( DATA_options("data_connection"), paste("SELECT DISTINCT hash FROM",  table ) )
+      i %in% dbGetQuery( getOption("LEEF.Data.status")$data_connection, paste("SELECT DISTINCT hash FROM",  table ) )
     }
   )
   names(result) <- hash
-
+  ##
   return(result)
 }

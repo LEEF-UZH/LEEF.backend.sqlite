@@ -1,4 +1,4 @@
-Package: LEEF.measurement.template
+Package: LEEF.backend.sqlite
 Type: Package
 Title: Pre-process and extract template
 Version: 0.2.0
@@ -8,7 +8,10 @@ Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
 Depends: R (>= 3.5.0), LEEF.Data
-Imports: dplyr, readr
+Imports: 
+  dplyr, 
+  readr,
+  RSQLite
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2

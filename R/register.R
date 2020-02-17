@@ -2,12 +2,13 @@
 #'
 #' @return invisibly \code{TRUE} when completed successful
 #'
-#' @importFrom LEEF.Data add_pre_processor add_extractor
 #' @export
 #'
 register <- function() {
-  LEEF.Data::add_extractor( pre_processor_respirometer )
-  LEEF.Data::add_extractor( extractor_respirometer )
+  if (is.null(system.file(package = "LEEF.Data"))) {
+    stop("This function requres the package to be installed!")
+  }
+  LEEF.Data::add_additor( additor_sqlite )
   ##
   invisible(TRUE)
 }
