@@ -95,10 +95,10 @@ install: build
 
 ####
 
-drat: build
+drat: docs build
 	cd 
 	@Rscript -e "drat::insertPackage('./../$(PKGNAME)_$(PKGVERS).tar.gz', repodir = './../../drat/', commit = TRUE)"
-	cd ./../../drat/; git push origin gh-pages
+
 	
 
 ####
