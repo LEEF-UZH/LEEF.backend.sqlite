@@ -9,14 +9,14 @@
 #' @examples
 sqlite_disconnect <- function() {
   result <- NULL
-  if ( !is.null(getOption("LEEF.Data.status")$data_connection) ) {
+  if ( !is.null(getOption("LEEF.status")$data_connection) ) {
     try(
-      result <- DBI::dbDisconnect(getOptino("LEEF.Data")$data_connection),
+      result <- DBI::dbDisconnect(getOptino("LEEF")$data_connection),
       silent = TRUE
     )
-    status <- getOption("LEEF.Data.status")
+    status <- getOption("LEEF.status")
     status$data_connection <- NULL
-    options( LEEF.Data.status = status )
+    options( LEEF.status = status )
   }
   ##
   invisible(result)

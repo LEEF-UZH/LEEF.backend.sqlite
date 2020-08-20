@@ -12,13 +12,13 @@ sqlite_isAlive <- function() {
   try(
     {
       result <- DBI::dbGetQuery(
-        conn = getOption("LEEF.Data.status")$data_connection,
+        conn = getOption("LEEF.status")$data_connection,
         statement = "SELECT 1"
       )[[1]] == 1
     },
     silent = TRUE
   )
-  if (!result & !is.null(getOption("LEEF.Data.status")$data_connection)) {
+  if (!result & !is.null(getOption("LEEF.status")$data_connection)) {
       sqlite_disconnect()
   }
   invisible(result)

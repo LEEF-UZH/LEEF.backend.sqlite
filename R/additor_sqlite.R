@@ -32,7 +32,7 @@ additor_sqlite <- function(
 # Check if connection should be closed again ------------------------------
 
 
-  if ( is.null(getOption("LEEF.Data.status")$data_connection) ) {
+  if ( is.null(getOption("LEEF.status")$data_connection) ) {
     sqlite_connect()
     closeAgain <- TRUE
   }
@@ -53,7 +53,7 @@ additor_sqlite <- function(
   for (tbl in table_names) {
     if (
       (!DBI::dbExistsTable(
-        conn = getOption("LEEF.Data.status")$data_connection,
+        conn = getOption("LEEF.status")$data_connection,
         name = tbl
       ) ) &
       (!create_new_table)

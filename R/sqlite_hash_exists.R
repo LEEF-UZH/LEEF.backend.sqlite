@@ -25,7 +25,7 @@ sqlite_hash_exists <- function(
 
   # Check if connection should be closed again ------------------------------
 
-  if ( is.null(getOption("LEEF.Data.status")$data_connection) ) {
+  if ( is.null(getOption("LEEF.status")$data_connection) ) {
     sqlite_connect()
     closeAgain <- TRUE
   }
@@ -39,7 +39,7 @@ sqlite_hash_exists <- function(
   result <- sapply(
     hash,
     function(i) {
-      i %in% dbGetQuery( getOption("LEEF.Data.status")$data_connection, paste("SELECT DISTINCT hash FROM",  table ) )
+      i %in% dbGetQuery( getOption("LEEF.status")$data_connection, paste("SELECT DISTINCT hash FROM",  table ) )
     }
   )
   names(result) <- hash
