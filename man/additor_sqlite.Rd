@@ -4,7 +4,7 @@
 \alias{additor_sqlite}
 \title{Write a raw data table}
 \usage{
-additor_sqlite(create_new_table = FALSE)
+additor_sqlite(input, output, create_new_table = FALSE)
 }
 \arguments{
 \item{create_new_table}{if \code{TRUE}, create a new table if it does not exist. Default \code{FALSE}, i.e. raises error if the table does not exist.}
