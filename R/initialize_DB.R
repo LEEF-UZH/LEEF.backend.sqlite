@@ -1,27 +1,18 @@
 #' Create folder structure for data import and processing
 #'
 #' @param config_file config file to use. If none is specified, \code{cofig.yml} in the current working directory will be used.
-#' @param tts_api_key api key for getting the Trusted Timestamp from OriginStamp. Default is reading from the environmental variable \code{api_key}.
 #'
 #' @return invisible \code{TRUE}
 #'
 #' @importFrom yaml yaml.load_file
 #' @importFrom magrittr %>%
-#' @importFrom ROriginStamp ROriginStamp_options
 #'
 #' @export
 #'
 #' @examples
 initialize_db <- function(
-  config_file,
-  tts_api_key = Sys.getenv("api_key")
+  config_file
 ){
-
-  # Set api key from environmental variable ---------------------------------
-
-  ROriginStamp::ROriginStamp_options(
-    api_key = tts_api_key
-  )
 
   # Define default config file ----------------------------------------------
 
