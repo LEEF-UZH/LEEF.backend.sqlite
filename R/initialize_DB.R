@@ -102,7 +102,7 @@ initialize_db <- function(
   add_extractor( extractor_incubatortemp )
   add_extractor( extractor_flowcytometer )
   add_extractor( extractor_manualcount )
-  add_extractor( extractor_respirometer )
+  add_extractor( extractor_o2meter )
 
 
   # And the end -------------------------------------------------------------
