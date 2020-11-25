@@ -5,16 +5,16 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "LEEF.backend.sqlite",
-  "description": "More about what it does (maybe more than one line)\n    Use four spaces when indenting paragraphs within the Description.",
-  "name": "LEEF.backend.sqlite: Pre-process and extract template",
+  "description": "Adds the data extracted from the raw data and adds them to multiple SQLite databases. These databases are custom split for LEEF!!!",
+  "name": "LEEF.backend.sqlite: Add Extracted Data to SQLite Backend",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.2.0",
+  "version": "0.8.5",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.2 (2020-06-22)",
+  "runtimePlatform": "R version 4.0.3 (2020-10-10)",
   "author": {},
   "contributor": {},
   "copyrightHolder": {},
@@ -37,27 +37,15 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "dplyr",
-      "name": "dplyr",
+      "identifier": "DBI",
+      "name": "DBI",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "sameAs": "https://CRAN.R-project.org/package=dplyr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "readr",
-      "name": "readr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=readr"
+      "sameAs": "https://CRAN.R-project.org/package=DBI"
     },
     {
       "@type": "SoftwareApplication",
@@ -70,6 +58,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=RSQLite"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "yaml",
+      "name": "yaml",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
   "codeRepository": "https://github.com/LEEF-UZH/LEEF.backend.sqlite",

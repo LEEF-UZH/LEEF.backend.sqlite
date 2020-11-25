@@ -14,12 +14,17 @@
 #' @export
 #'
 #' @examples
-additor_sqlite <- function(
+additor_sqlite_multiple_db <- function(
   input,
   output
 ){
 
   conn <- NULL
+
+  progress <- file.path(normalizePath(output), paste0("ADDING.PREPARATION.ADDING"))
+  error    <- file.path(normalizePath(output), paste0("ERROR.ADDING.PREPARATION.ERROR"))
+
+  file.create(progress)
 
   on.exit(
     {
@@ -33,6 +38,10 @@ additor_sqlite <- function(
           )
         }
       }
+      if (file.exists(progress)) {
+        unlink(progress)
+        file.create(error)
+      }
     }
   )
 
@@ -45,8 +54,13 @@ additor_sqlite <- function(
 
   sample_name <- paste(smd$name, smd$timestamp, sep = "_")
 
-  db_name <- "LEEF.RRD.sqlite"
-  db <- file.path(output, db_name)
+  db_base_name <- "LEEF.RRD"
+
+  measures <- list.dirs(input, full.names = FALSE, recursive = FALSE)
+  measures <- data.frame(
+    measure = measures,
+    db_name = paste0(db_base_name, "_", measures)
+  )
 
   # create directory structure if it does not exist -------------------------
 
@@ -58,53 +72,67 @@ additor_sqlite <- function(
     )
   }
   ##
-  if (!file.exists( db )) {
-    file.create( db )
-  }
 
-  # Open sqlite db ----------------------------------------------------------
-
-  conn <- DBI::dbConnect(
-    drv = RSQLite::SQLite(),
-    dbname = db
-  )
-
-
-  # BEGIN TRANSACTION -------------------------------------------------------
-
-  DBI::dbBegin(conn)
+  unlink(progress)
 
   # Iterate through measurements --------------------------------------------
 
-  measures <- list.dirs(input, full.names = FALSE, recursive = FALSE)
+  for (i in 1:nrow(measures)) {
 
-  for (m in measures) {
     input_files <- list.files(
-      path = file.path(input, m),
+      path = file.path(input, measures$measure[i]),
       pattern = new_data_pattern,
       full.names = FALSE,
       recursive = FALSE
     )
+
     for (fn_in in input_files) {
-      x <- readRDS( file.path(input, m, fn_in) )
 
-      names(x) <- tolower(names(x))
+      if (grepl("Master", fn_in)) {
+        db_name <- paste0(
+          measures$db_name[[i]],
+          "_",
+          gsub("\\.rds", "", fn_in),
+          ".sqlite"
+        )
+      } else {
+        db_name <- paste0(
+          db_base_name,
+          ".sqlite"
+        )
+      }
 
-      x <- as.data.frame(x)
+      # BEGIN TRANSACTION -------------------------------------------------------
+
+      progress <- file.path(normalizePath(output), paste0("ADDING.", fn_in, ".TO.", db_name, ".ADDING"))
+      error    <- file.path(normalizePath(output), paste0("ERROR.ADDING.", fn_in, ".TO.", db_name, ".ERROR"))
+      file.create(progress)
+
+      conn <- DBI::dbConnect(
+        drv = RSQLite::SQLite(),
+        dbname = file.path( output, db_name )
+      )
+
+      DBI::dbBegin(conn)
 
       tn <- tolower(gsub("\\.rds", "", fn_in))
-      tn <- paste(m, tn, sep = "_")
       tn <- gsub("\\.", "_", tn)
 
-      ## TODO check if data has already been added and only add new data
+      dat <- readRDS( file.path(input, measures$measure[i], fn_in) )
+
+      names(dat) <- tolower(names(dat))
+
+      dat <- as.data.frame(dat)
+
 
       skipp_add <- FALSE
       if (DBI::dbExistsTable(conn, tn)){
         ts <- DBI::dbGetQuery(conn, paste("SELECT DISTINCT timestamp FROM", tn))
         tn_exists <- TRUE
-        if (unique(x$timestamp) %in% ts) {
+        if (unique(dat$timestamp) %in% ts) {
           warning("!!! ", tn, " not added as timestamp already present! !!!")
           file.create(file.path(normalizePath(output), paste0("ERROR.ADDING.", tn, ".NOT_ADDED.TIMESTAMP_EXISTS.", ts, ".ERROR")))
+          skipp_add <- TRUE
         }
       } else {
         tn_exists <- FALSE
@@ -114,19 +142,22 @@ additor_sqlite <- function(
         DBI::dbWriteTable(
           conn,
           name = tn,
-          value = x,
+          value = dat,
           overwrite = FALSE,
           append = tn_exists
         )
       }
+
+      # COMMIT TRANSACTION ------------------------------------------------------
+
+      DBI::dbCommit(conn)
+      x <- DBI::dbExecute(conn, "VACUUM")
+      DBI::dbDisconnect(conn)
+
+      unlink(progress)
     }
   }
 
-  # COMMIT TRANSACTION ------------------------------------------------------
-
-  DBI::dbCommit(conn)
-  x <- DBI::dbExecute(conn, "VACUUM")
-  DBI::dbDisconnect(conn)
 
   # Finalise stuff ----------------------------------------------------------
 
