@@ -47,7 +47,7 @@ additor_sqlite_multiple_db <- function(
 
   # Some variable definitions -----------------------------------------------
 
-  new_data_pattern <- "\\.rds$"
+  new_data_pattern <- "\\.csv$"
 
   smdf <- file.path(input, "sample_metadata.yml")
   smd <- yaml::yaml.load_file( smdf )
@@ -92,7 +92,7 @@ additor_sqlite_multiple_db <- function(
         db_name <- paste0(
           measures$db_name[[i]],
           "_",
-          gsub("\\.rds", "", fn_in),
+          gsub("\\.csv", "", fn_in),
           ".sqlite"
         )
       } else {
@@ -115,10 +115,10 @@ additor_sqlite_multiple_db <- function(
 
       DBI::dbBegin(conn)
 
-      tn <- tolower(gsub("\\.rds", "", fn_in))
+      tn <- tolower(gsub("\\.csv", "", fn_in))
       tn <- gsub("\\.", "_", tn)
 
-      dat <- readRDS( file.path(input, measures$measure[i], fn_in) )
+      dat <- read.csv( file.path(input, measures$measure[i], fn_in) )
 
       names(dat) <- tolower(names(dat))
 

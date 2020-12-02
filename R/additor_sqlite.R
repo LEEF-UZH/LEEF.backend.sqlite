@@ -38,7 +38,7 @@ additor_sqlite <- function(
 
   # Some variable definitions -----------------------------------------------
 
-  new_data_pattern <- "\\.rds$"
+  new_data_pattern <- "\\.csv$"
 
   smdf <- file.path(input, "sample_metadata.yml")
   smd <- yaml::yaml.load_file( smdf )
@@ -86,13 +86,13 @@ additor_sqlite <- function(
       recursive = FALSE
     )
     for (fn_in in input_files) {
-      x <- readRDS( file.path(input, m, fn_in) )
+      x <- read.csv( file.path(input, m, fn_in) )
 
       names(x) <- tolower(names(x))
 
       x <- as.data.frame(x)
 
-      tn <- tolower(gsub("\\.rds", "", fn_in))
+      tn <- tolower(gsub("\\.csv", "", fn_in))
       tn <- paste(m, tn, sep = "_")
       tn <- gsub("\\.", "_", tn)
 
