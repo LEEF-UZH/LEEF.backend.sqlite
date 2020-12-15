@@ -8,7 +8,8 @@
 #' @return returns invisible\code{TRUE}
 #'
 #' @importFrom yaml yaml.load_file
-#' @importFrom DBI dbWriteTable dbExistsTable dbIsValid
+#' @importFrom utils read.csv
+#' @importFrom DBI dbCreateTable dbWriteTable dbExistsTable dbIsValid
 #' @importFrom DBI dbBegin dbCommit dbRollback
 #' @importFrom RSQLite SQLite
 #' @export
@@ -18,6 +19,75 @@ additor_sqlite_multiple_db <- function(
   input,
   output
 ){
+
+  # Some variable definitions -----------------------------------------------
+
+  new_data_pattern <- "\\.csv$"
+
+  db_base_name <- "LEEF.RRD"
+
+	seperate_db <- c(
+		## bemovi
+		"Master",
+		## flowcam
+		"algae_traits",
+		"algae_metadata"
+	)
+
+	# Helper function ---------------------------------------------------------
+
+	get_db_name <- function( db_name, fn_in, seperate_db ) {
+	  fn_in <- tolower(gsub("\\.csv", "", fn_in))
+
+	  if (any(grepl(fn_in, seperate_db))) {
+	    db_name <- paste0(
+	      db_name,
+	      "_",
+	      gsub("\\.csv", "", fn_in),
+	      ".sqlite"
+	    )
+	  } else {
+	    db_name <- paste0(
+	      db_base_name,
+	      ".sqlite"
+	    )
+	  }
+	}
+
+	connect <- function( dbname ) {
+	  conn <- DBI::dbConnect(
+	    drv = RSQLite::SQLite(),
+	    dbname = dbname
+	  )
+	  file.create(
+	    file.path(
+	      normalizePath(output),
+	      paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
+	    )
+	  )
+	  return(conn)
+	}
+
+	disconnect <- function (conn ) {
+	  dbname <- basename(conn@dbname)
+	  DBI::dbDisconnect(conn)
+	  unlink(
+	    file.path(
+	      normalizePath(output),
+	      paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
+	    )
+	  )
+	}
+
+  # create directory structure if it does not exist -------------------------
+
+  if (!dir.exists(output)) {
+    dir.create(
+      output,
+      recursive = TRUE,
+      showWarnings = FALSE
+    )
+  }
 
   conn <- NULL
 
@@ -33,7 +103,7 @@ additor_sqlite_multiple_db <- function(
         if (DBI::dbIsValid(conn)) {
           DBI::dbRollback(conn)
           try(
-            DBI::dbDisconnect(conn),
+            disconnect(conn),
             silent = TRUE
           )
         }
@@ -45,16 +115,8 @@ additor_sqlite_multiple_db <- function(
     }
   )
 
-  # Some variable definitions -----------------------------------------------
 
-  new_data_pattern <- "\\.csv$"
-
-  smdf <- file.path(input, "sample_metadata.yml")
-  smd <- yaml::yaml.load_file( smdf )
-
-  sample_name <- paste(smd$name, smd$timestamp, sep = "_")
-
-  db_base_name <- "LEEF.RRD"
+# Read measures --------------------------------------------------------------------
 
   measures <- list.dirs(input, full.names = FALSE, recursive = FALSE)
   measures <- data.frame(
@@ -62,20 +124,11 @@ additor_sqlite_multiple_db <- function(
     db_name = paste0(db_base_name, "_", measures)
   )
 
-  # create directory structure if it does not exist -------------------------
-
-  if (!dir.exists(output)) {
-    dir.create(
-      output,
-      recursive = TRUE,
-      showWarnings = FALSE
-    )
-  }
   ##
 
   unlink(progress)
 
-  # Iterate through measurements --------------------------------------------
+	# Create tables if they do not exist --------------------------------------------
 
   for (i in 1:nrow(measures)) {
 
@@ -88,71 +141,120 @@ additor_sqlite_multiple_db <- function(
 
     for (fn_in in input_files) {
 
-      if (grepl("Master", fn_in)) {
-        db_name <- paste0(
-          measures$db_name[[i]],
-          "_",
-          gsub("\\.csv", "", fn_in),
-          ".sqlite"
-        )
-      } else {
-        db_name <- paste0(
-          db_base_name,
-          ".sqlite"
-        )
-      }
+      db_name <- get_db_name(
+        measures$db_name[[i]],
+        fn_in,
+        seperate_db
+      )
 
-      # BEGIN TRANSACTION -------------------------------------------------------
+      progress <- file.path(normalizePath(output), paste0("PREPARING.", fn_in, ".TO.", db_name, ".PREPARING"))
+      error    <- file.path(normalizePath(output), paste0("ERROR.PREPARING.", fn_in, ".TO.", db_name, ".PREPARING"))
+      file.create(progress)
+
+      conn <- connect( dbname = file.path(output, db_name) )
+
+      tn <- tolower(gsub("\\.csv", "", fn_in))
+      tn <- gsub("\\.", "_", tn)
+
+      if (!DBI::dbExistsTable(conn, tn)) {
+	      dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in), nrows = 10 )
+	      dat <- as.data.frame(dat)
+	      dat$timestamp <- "TIMESTAMP"
+
+	      if ( db_name == paste0(db_base_name, ".sqlite") ) {
+	        names(dat) <- tolower(names(dat))
+	      }
+
+				DBI::dbCreateTable(
+					conn,
+					name = tn,
+					fields = dat
+				)
+
+				DBI::dbExecute(
+					conn,
+					paste0("CREATE INDEX idx_", tn, "_timetamp on ", tn, "(timestamp);")
+				)
+				DBI::dbExecute(
+				  conn,
+				  paste0("CREATE INDEX idx_", tn, "_bottle on ", tn, "(bottle);")
+				)
+				DBI::dbExecute(
+				  conn,
+				  paste0("CREATE INDEX idx_", tn, "_timestamp_bottle on ", tn, "(timestamp, bottle);")
+				)
+      }
+	    disconnect(conn)
+
+      unlink(progress)
+    }
+  }
+
+
+	# Write data in one transaction --------------------------------------------
+
+  for (i in 1:nrow(measures)) {
+
+    input_files <- list.files(
+      path = file.path(input, measures$measure[i]),
+      pattern = new_data_pattern,
+      full.names = FALSE,
+      recursive = FALSE
+    )
+
+    for (fn_in in input_files) {
+
+      db_name <- get_db_name(
+        measures$db_name[[i]],
+        fn_in,
+        seperate_db
+      )
 
       progress <- file.path(normalizePath(output), paste0("ADDING.", fn_in, ".TO.", db_name, ".ADDING"))
       error    <- file.path(normalizePath(output), paste0("ERROR.ADDING.", fn_in, ".TO.", db_name, ".ERROR"))
       file.create(progress)
 
-      conn <- DBI::dbConnect(
-        drv = RSQLite::SQLite(),
-        dbname = file.path( output, db_name )
-      )
-
-      DBI::dbBegin(conn)
-
       tn <- tolower(gsub("\\.csv", "", fn_in))
       tn <- gsub("\\.", "_", tn)
 
-      dat <- read.csv( file.path(input, measures$measure[i], fn_in) )
-
-      names(dat) <- tolower(names(dat))
-
+      dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in) )
       dat <- as.data.frame(dat)
 
-
-      skipp_add <- FALSE
-      if (DBI::dbExistsTable(conn, tn)){
-        ts <- DBI::dbGetQuery(conn, paste("SELECT DISTINCT timestamp FROM", tn))
-        tn_exists <- TRUE
-        if (unique(dat$timestamp) %in% ts) {
-          warning("!!! ", tn, " not added as timestamp already present! !!!")
-          file.create(file.path(normalizePath(output), paste0("ERROR.ADDING.", tn, ".NOT_ADDED.TIMESTAMP_EXISTS.", ts, ".ERROR")))
-          skipp_add <- TRUE
-        }
-      } else {
-        tn_exists <- FALSE
+      if ( db_name == paste0(db_base_name, ".sqlite") ) {
+        names(dat) <- tolower(names(dat))
       }
 
-      if (!skipp_add) {
+      conn <- connect( dbname = file.path(output, db_name) )
+
+      # BEGIN TRANSACTION -------------------------------------------------------
+
+      DBI::dbBegin(conn)
+
+      skip_add <- FALSE
+
+      timestamp <- unlist (
+        DBI::dbGetQuery(conn, paste("SELECT DISTINCT timestamp FROM", tn))
+      )
+			if (any(unique(dat$timestamp) %in% timestamp)) {
+				warning("!!! ", tn, " not added as timestamp already present! !!!")
+				file.create(file.path(normalizePath(output), paste0("ERROR.ADDING.", tn, ".NOT_ADDED.TIMESTAMP_EXISTS.", timestamp, ".ERROR")))
+				skip_add <- TRUE
+			} else {
         DBI::dbWriteTable(
           conn,
           name = tn,
           value = dat,
           overwrite = FALSE,
-          append = tn_exists
+          append = TRUE
         )
       }
 
-      # COMMIT TRANSACTION ------------------------------------------------------
-
       DBI::dbCommit(conn)
       x <- DBI::dbExecute(conn, "VACUUM")
-      DBI::dbDisconnect(conn)
+
+      # END TRANSACTION ------------------------------------------------------
+
+      disconnect(conn)
 
       unlink(progress)
     }
