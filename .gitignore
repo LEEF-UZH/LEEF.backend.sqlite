@@ -1,5 +1,7 @@
 .Rproj.user
-.Rhistory
+inst/doc
+
+Rhistory
 .RData
 .Ruserdata
 # knitr and R markdown default cache directories
@@ -12,11 +14,8 @@
 .Rproj.user
 #
 temp
-
 local
-
 ## Example Data Folder
 0.raw.data
 1.pre-processed.data
-
 *.bbprojectd

@@ -1,0 +1,157 @@
+---
+title: "How to use a SQLite database from R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to use a SQLite database from R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+
+```
+
+
+
+## Load the libraries needed and set tha path to the database
+
+The `DBI` package contains the functions needed, `RSQLite` the connectivity to an SQLite database. Sidenote: it is possible to switch to e.g. a MySQL database by simply using the appropriate package instead of `RSQLite`.
+
+```{r}
+library(DBI)
+library(RSQLite)
+
+dbname <- "~/LEEF/9.backend/LEEF.RRD.sqlite"  
+```
+
+The `::` are not necessary, but they make clear from which package the commands are
+coming from and avoid using wrong functions from other packages.
+
+I will only show the basic commands, a more detailed intro can be found at e.g. [datacamp](https://www.datacamp.com/community/tutorials/sqlite-in-r) and another basic intro at [RStudio](https://db.rstudio.com/databases/sqlite/).
+
+## connect to database
+```{r}
+conn <- DBI::dbConnect(
+	    		drv = RSQLite::SQLite(),
+	    		dbname = dbname
+	  		)
+```
+	  		
+## List tables
+```{r}
+DBI::dbListTables(conn)
+```
+	
+## List columns in tables
+```{r}
+DBI::dbListFields( conn, "flowcytometer" )
+```
+
+## Load complete table
+```{r}
+tbl <- DBI::dbReadTable( conn, "flowcytometer")
+head(tbl)
+```
+	  		
+## To the interesting stuff
+In contrast to e.g. `.csv` files, databases can do joins, filter, calculations, etc. in the database without having to load all data into R. For this, the [SQLite (Sequential Query Language)](https://www.sqlitetutorial.net) languate is used. The basics are the same for all many databases (well - most SQL databases anyway). Please see the [SQLite tutorial for more info](https://www.sqlitetutorial.net).
+
+### Read a table via SQL
+
+```{r}
+sql <- " SELECT * FROM flowcytometer"
+
+tbl <- DBI::dbGetQuery(
+  conn,
+  statement = sql
+)
+head(tbl)
+```
+
+### Read only results from bottle 29
+
+```{r}
+sql <- " SELECT * FROM flowcytometer WHERE bottle = 29"
+
+tbl <- DBI::dbGetQuery(
+  conn,
+  statement = sql
+)
+head(tbl)
+```
+
+
+### Read only selected columns from bottle 29
+
+```{r}
+sql <- " SELECT bottle, 'total.counts', gated_density_perml FROM flowcytometer WHERE bottle = 29"
+
+tbl <- DBI::dbGetQuery(
+  conn,
+  statement = sql
+)
+head(tbl)
+```
+
+
+### join the manualcount into the flowcytometer
+
+```{r}
+sql <- " SELECT flowcytometer.bottle, flowcytometer.gated_density_perml, manualcount.density FROM flowcytometer INNER JOIN manualcount ON flowcytometer.bottle = manualcount.bottle"
+
+tbl <- DBI::dbGetQuery(
+  conn,
+  statement = sql
+)
+head(tbl)
+```
+
+The sql statement can (and should now) be better not in a line:
+
+```{r}
+sql <- " 
+SELECT 
+  flowcytometer.bottle, 
+  flowcytometer.gated_density_perml, 
+  manualcount.density 
+FROM 
+  flowcytometer 
+INNER JOIN 
+  manualcount 
+ON 
+  flowcytometer.bottle = manualcount.bottle
+"
+```
+
+which is much easier to read.
+
+## Further points:
+
+### [Indices](https://www.sqlitetutorial.net/sqlite-index/)
+Databases use [Indices](https://www.sqlitetutorial.net/sqlite-index/) to make searching considerably faster than without indexes. I am building at
+the moment indices from `timestamp, `bottle` (used for joining) and `timestamp x bottle`. If there are any other indices you think would be usefil, pleas let me know. No problem to add, even at a later stage.
+
+### [Views](https://www.sqlitetutorial.net/sqlite-create-view/)
+In addition to tables, which contain the data, databases have so called [Views](https://www.sqlitetutorial.net/sqlite-create-view/). Views is essentially a quer stored in the database, which can be read as a normal table. I am thinking of creating views which join the databases, contain common filters, etc. Please let me know whci ones would be useful for you.
+
+### [Functions](https://www.sqlitetutorial.net/sqlite-functions/)
+SQLIte includes a number of useful functions. Especially the [aggregate](https://www.sqlitetutorial.net/sqlite-aggregate-functions/) functions are very useful as, again, not all datapoints need to be read in R to be aggregated. This can be done by the database, using optimised code. We should discuss if this would be useful for you, to move some calculations into the database.
+
+
+### Combining the different sql elements
+All of the elements can be combined - you can have `SELECT` queries ( [subqueries](https://www.sqlitetutorial.net/sqlite-subquery/) ), which provide input to a function, which is also getting input from another subquery, and all of that is stored in a View. Many possibilities - and everything can be done from R.
+
+
+## disconnect from database
+This is important!
+
+```{r}
+DBI::dbDisconnect(conn)
+```
