@@ -79,6 +79,13 @@ additor_sqlite_multiple_db <- function(
 	  )
 	}
 
+
+  tn_from_fn <- function(fn) {
+  	tn <- tolower(gsub("\\.csv", "", fn_in))
+		tn <- paste0(measures$measure[i], "__", tn)
+    tn <- gsub("\\.", "_", tn)
+		return(tn)
+  }
   # create directory structure if it does not exist -------------------------
 
   if (!dir.exists(output)) {
@@ -153,8 +160,7 @@ additor_sqlite_multiple_db <- function(
 
       conn <- connect( dbname = file.path(output, db_name) )
 
-      tn <- tolower(gsub("\\.csv", "", fn_in))
-      tn <- gsub("\\.", "_", tn)
+      tn <- tn_from_fn( fn_in )
 
       if (!DBI::dbExistsTable(conn, tn)) {
 	      dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in), nrows = 10 )
@@ -214,8 +220,9 @@ additor_sqlite_multiple_db <- function(
       error    <- file.path(normalizePath(output), paste0("ERROR.ADDING.", fn_in, ".TO.", db_name, ".ERROR"))
       file.create(progress)
 
-      tn <- tolower(gsub("\\.csv", "", fn_in))
-      tn <- gsub("\\.", "_", tn)
+      tn <- tn_from_fn( fn_in )
+
+			
 
       dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in) )
       dat <- as.data.frame(dat)
