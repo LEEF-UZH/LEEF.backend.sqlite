@@ -17,7 +17,8 @@
 #' @examples
 additor_sqlite_multiple_db <- function(
   input,
-  output
+  output,
+  tn_postfix = NULL
 ){
 
   # Some variable definitions -----------------------------------------------
@@ -28,7 +29,8 @@ additor_sqlite_multiple_db <- function(
 
 	seperate_db <- c(
 		## bemovi
-		"Master",
+		"master",
+		"master_cropped",
 		## flowcam
 		"algae_traits",
 		"algae_metadata"
@@ -79,13 +81,17 @@ additor_sqlite_multiple_db <- function(
 	  )
 	}
 
-
-  tn_from_fn <- function(fn) {
-  	tn <- tolower(gsub("\\.csv", "", fn_in))
-		tn <- paste0(measures$measure[i], "__", tn)
+  tn_from_fn <- function(fn, measure) {
+  	tn <- tolower(gsub("\\.csv", "", fn))
+  	if (is.null(tn_postfix)) {
+			tn <- paste0(measure, "__", tn)
+		} else {
+			tn <- paste0(measure, "_", tn_postfix, "__", tn)
+		}
     tn <- gsub("\\.", "_", tn)
 		return(tn)
   }
+
   # create directory structure if it does not exist -------------------------
 
   if (!dir.exists(output)) {
@@ -160,7 +166,7 @@ additor_sqlite_multiple_db <- function(
 
       conn <- connect( dbname = file.path(output, db_name) )
 
-      tn <- tn_from_fn( fn_in )
+      tn <- tn_from_fn( fn_in, measures$measure[i] )
 
       if (!DBI::dbExistsTable(conn, tn)) {
 	      dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in), nrows = 10 )
@@ -220,11 +226,11 @@ additor_sqlite_multiple_db <- function(
       error    <- file.path(normalizePath(output), paste0("ERROR.ADDING.", fn_in, ".TO.", db_name, ".ERROR"))
       file.create(progress)
 
-      tn <- tn_from_fn( fn_in )
+      tn <- tn_from_fn( fn_in, measures$measure[i] )
 
-			
-
-      dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in) )
+      dat <- utils::read.csv( 
+      	file.path(input, measures$measure[i], fn_in) 
+      )
       dat <- as.data.frame(dat)
 
       if ( db_name == paste0(db_base_name, ".sqlite") ) {

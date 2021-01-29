@@ -4,7 +4,7 @@
 \alias{additor_sqlite_multiple_db}
 \title{Write a RRD data table}
 \usage{
-additor_sqlite_multiple_db(input, output)
+additor_sqlite_multiple_db(input, output, tn_postfix = NULL)
 }
 \arguments{
 \item{input}{directory from which to read the data}
