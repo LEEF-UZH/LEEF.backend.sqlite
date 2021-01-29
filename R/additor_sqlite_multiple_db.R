@@ -25,6 +25,8 @@ additor_sqlite_multiple_db <- function(
 
   new_data_pattern <- "\\.csv$"
 
+	exclude_files <- c("compositions.csv", "experimental_design.csv")
+
   db_base_name <- "LEEF.RRD"
 
 	seperate_db <- c(
@@ -131,6 +133,7 @@ additor_sqlite_multiple_db <- function(
 
 # Read measures --------------------------------------------------------------------
 
+
   measures <- list.dirs(input, full.names = FALSE, recursive = FALSE)
   measures <- data.frame(
     measure = measures,
@@ -151,6 +154,8 @@ additor_sqlite_multiple_db <- function(
       full.names = FALSE,
       recursive = FALSE
     )
+
+    input_files <- input_files[!(input_files %in% exclude_files)]
 
     for (fn_in in input_files) {
 
@@ -214,6 +219,8 @@ additor_sqlite_multiple_db <- function(
       recursive = FALSE
     )
 
+    input_files <- input_files[!(input_files %in% exclude_files)]
+
     for (fn_in in input_files) {
 
       db_name <- get_db_name(
@@ -228,8 +235,8 @@ additor_sqlite_multiple_db <- function(
 
       tn <- tn_from_fn( fn_in, measures$measure[i] )
 
-      dat <- utils::read.csv( 
-      	file.path(input, measures$measure[i], fn_in) 
+      dat <- utils::read.csv(
+      	file.path(input, measures$measure[i], fn_in)
       )
       dat <- as.data.frame(dat)
 

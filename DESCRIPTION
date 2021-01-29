@@ -1,7 +1,7 @@
 Package: LEEF.backend.sqlite
 Type: Package
 Title: Add Extracted Data to SQLite Backend
-Version: 0.8.11
+Version: 0.8.12
 Author: Rainer M. Krug <Rainer.Krug@uzh.ch>
 Maintainer: Rainer M. Krug <Rainer.Krug@uzh.ch>
 Description: Adds the data extracted from the raw data and adds them to multiple SQLite databases. These databases are custom split for LEEF!!!
