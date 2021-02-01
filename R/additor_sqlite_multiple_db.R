@@ -25,7 +25,12 @@ additor_sqlite_multiple_db <- function(
 
   new_data_pattern <- "\\.csv$"
 
-	exclude_files <- c("compositions.csv", "experimental_design.csv")
+	exclude_files <- c(
+		## general
+		"compositions.csv", "experimental_design.csv",
+		## flowcytometer
+		"gates_coordinates.csv", "metadata_flowcytometer.csv"
+	)
 
   db_base_name <- "LEEF.RRD"
 

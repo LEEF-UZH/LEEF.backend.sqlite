@@ -8,7 +8,7 @@
   "description": "Adds the data extracted from the raw data and adds them to multiple SQLite databases. These databases are custom split for LEEF!!!",
   "name": "LEEF.backend.sqlite: Add Extracted Data to SQLite Backend",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.8.12",
+  "version": "0.8.13",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
