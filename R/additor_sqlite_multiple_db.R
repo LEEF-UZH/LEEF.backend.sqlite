@@ -29,7 +29,9 @@ additor_sqlite_multiple_db <- function(
 		## general
 		"compositions.csv", "experimental_design.csv",
 		## flowcytometer
-		"gates_coordinates.csv", "metadata_flowcytometer.csv"
+		"gates_coordinates.csv", "metadata_flowcytometer.csv",
+		## flowcam
+		"flowcam_dilution"
 	)
 
   db_base_name <- "LEEF.RRD"
@@ -192,7 +194,7 @@ additor_sqlite_multiple_db <- function(
 					name = tn,
 					fields = dat
 				)
-
+cat(tn, "\n")
 				DBI::dbExecute(
 					conn,
 					paste0("CREATE INDEX idx_", tn, "_timetamp on ", tn, "(timestamp);")
