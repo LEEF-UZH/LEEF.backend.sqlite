@@ -31,7 +31,7 @@ additor_sqlite_multiple_db <- function(
 		## flowcytometer
 		"gates_coordinates.csv", "metadata_flowcytometer.csv",
 		## flowcam
-		"flowcam_dilution"
+		"flowcam_dilution.csv"
 	)
 
   db_base_name <- "LEEF.RRD"

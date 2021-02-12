@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -15,9 +15,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-
-```
 
 
 
@@ -153,6 +150,6 @@ All of the elements can be combined - you can have `SELECT` queries ( [subquerie
 ## disconnect from database
 This is important!
 
-```{r}
+```{r disconnect}
 DBI::dbDisconnect(conn)
 ```
