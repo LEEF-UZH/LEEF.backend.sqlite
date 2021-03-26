@@ -14,15 +14,27 @@
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.3 (2020-10-10)",
-  "author": {},
+  "runtimePlatform": "R version 4.0.4 (2021-02-15)",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Rainer M.",
+      "familyName": "Krug",
+      "email": "Rainer.Krug@uzh.ch"
+    }
+  ],
   "contributor": {},
   "copyrightHolder": {},
-  "funder": {},
+  "funder": [
+    {
+      "@type": "Organization",
+      "name": "SNF Project 310030_188431"
+    }
+  ],
   "maintainer": [
     {
       "@type": "Person",
-      "givenName": ["Rainer", "M."],
+      "givenName": "Rainer M.",
       "familyName": "Krug",
       "email": "Rainer.Krug@uzh.ch"
     }
