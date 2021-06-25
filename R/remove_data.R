@@ -2,7 +2,7 @@
 #'
 #' Remove from the database all records from the database which are associated
 #'   with a measurement method and have the provided timestamp. The records are
-#'   moved to a backup database whose name is returned.
+#'   moved to a backup database in the same directory whose name is returned.
 #' @param db name of the database from which the records should be removed
 #' @param timestamp \bold{required argument!} timestamp which should be removed
 #' @param method method(s) from which the records should be removed. This is the first string

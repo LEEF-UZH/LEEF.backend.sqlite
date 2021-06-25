@@ -21,5 +21,5 @@ name of the backup database or, if no table for the specified method exists, \co
 \description{
 Remove from the database all records from the database which are associated
   with a measurement method and have the provided timestamp. The records are
-  moved to a backup database whose name is returned.
+  moved to a backup database in the same directory whose name is returned.
 }
