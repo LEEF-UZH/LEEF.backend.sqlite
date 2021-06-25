@@ -31,19 +31,20 @@ additor_sqlite_multiple_db <- function(
 		## flowcytometer
 		"gates_coordinates.csv", "metadata_flowcytometer.csv",
 		## flowcam
-		"flowcam_dilution.csv"
+		"flowcam_dilution.csv",
+	# )
+	#
+	# seperate_db <- c(
+	  ## bemovi
+	  "master.csv",
+	  "master_cropped.csv",
+	  ## flowcam
+	  "algae_traits.csv",
+	  "algae_metadata.csv",
+	  "flowcytometer_ungated.csv"
 	)
 
   db_base_name <- "LEEF.RRD"
-
-	seperate_db <- c(
-		## bemovi
-		"master",
-		"master_cropped",
-		## flowcam
-		"algae_traits",
-		"algae_metadata"
-	)
 
 	# Helper function ---------------------------------------------------------
 
@@ -65,7 +66,7 @@ additor_sqlite_multiple_db <- function(
 	  }
 	}
 
-	connect <- function( dbname ) {
+	connect <- function(dbname) {
 	  conn <- DBI::dbConnect(
 	    drv = RSQLite::SQLite(),
 	    dbname = dbname
@@ -79,7 +80,7 @@ additor_sqlite_multiple_db <- function(
 	  return(conn)
 	}
 
-	disconnect <- function (conn ) {
+	disconnect <- function(conn) {
 	  dbname <- basename(conn@dbname)
 	  DBI::dbDisconnect(conn)
 	  unlink(
