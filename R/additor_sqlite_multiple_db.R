@@ -49,21 +49,22 @@ additor_sqlite_multiple_db <- function(
 	# Helper function ---------------------------------------------------------
 
 	get_db_name <- function( db_name, fn_in, seperate_db ) {
-	  fn_in <- tolower(gsub("\\.csv", "", fn_in))
-
-	  if (any(grepl(fn_in, seperate_db))) {
-	    db_name <- paste0(
-	      db_name,
-	      "_",
-	      gsub("\\.csv", "", fn_in),
-	      ".sqlite"
-	    )
-	  } else {
-	    db_name <- paste0(
-	      db_base_name,
-	      ".sqlite"
-	    )
-	  }
+	  # fn_in <- tolower(gsub("\\.csv", "", fn_in))
+	  #
+	  # if (any(grepl(fn_in, seperate_db))) {
+	  #   db_name <- paste0(
+	  #     db_name,
+	  #     "_",
+	  #     gsub("\\.csv", "", fn_in),
+	  #     ".sqlite"
+	  #   )
+	  # } else {
+	  #   db_name <- paste0(
+	  #     db_base_name,
+	  #     ".sqlite"
+	  #   )
+	  # }
+	  return(db_base_name)
 	}
 
 	connect <- function(dbname) {
@@ -169,8 +170,8 @@ additor_sqlite_multiple_db <- function(
 
       db_name <- get_db_name(
         measures$db_name[[i]],
-        fn_in,
-        seperate_db
+        fn_in #,
+#        seperate_db
       )
 
       progress <- file.path(normalizePath(output), paste0("PREPARING.", fn_in, ".TO.", db_name, ".PREPARING"))
@@ -233,8 +234,8 @@ cat(tn, "\n")
 
       db_name <- get_db_name(
         measures$db_name[[i]],
-        fn_in,
-        seperate_db
+        fn_in #,
+#        seperate_db
       )
 
       progress <- file.path(normalizePath(output), paste0("ADDING.", fn_in, ".TO.", db_name, ".ADDING"))
