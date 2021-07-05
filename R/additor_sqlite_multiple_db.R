@@ -59,10 +59,10 @@ additor_sqlite_multiple_db <- function(
 	  #     ".sqlite"
 	  #   )
 	  # } else {
-	  #   db_name <- paste0(
-	  #     db_base_name,
-	  #     ".sqlite"
-	  #   )
+	  db_name <- paste0(
+	    db_base_name,
+	    ".sqlite"
+	  )
 	  # }
 	  return(db_base_name)
 	}
