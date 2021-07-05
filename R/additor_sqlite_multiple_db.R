@@ -36,8 +36,10 @@ additor_sqlite_multiple_db <- function(
 	#
 	# seperate_db <- c(
 	  ## bemovi
-	  "master.csv",
-	  "master_cropped.csv",
+	  "Master.csv",
+	  "Master_cropped.csv",
+	  "Morph_mvt.csv",
+	  "Morph_mvt_cropped.csv",
 	  ## flowcam
 	  "algae_traits.csv",
 	  "algae_metadata.csv",
