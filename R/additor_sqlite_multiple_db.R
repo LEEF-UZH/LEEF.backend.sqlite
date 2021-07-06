@@ -47,27 +47,28 @@ additor_sqlite_multiple_db <- function(
 	)
 
   db_base_name <- "LEEF.RRD"
+  db_name <- paste0(db_base_name, ".sqlite")
 
 	# Helper function ---------------------------------------------------------
 
-	get_db_name <- function( db_name, fn_in, seperate_db ) {
-	  # fn_in <- tolower(gsub("\\.csv", "", fn_in))
-	  #
-	  # if (any(grepl(fn_in, seperate_db))) {
-	  #   db_name <- paste0(
-	  #     db_name,
-	  #     "_",
-	  #     gsub("\\.csv", "", fn_in),
-	  #     ".sqlite"
-	  #   )
-	  # } else {
-	  db_name <- paste0(
-	    db_base_name,
-	    ".sqlite"
-	  )
-	  # }
-	  return(db_base_name)
-	}
+	# get_db_name <- function( db_name, fn_in, seperate_db ) {
+	#   # fn_in <- tolower(gsub("\\.csv", "", fn_in))
+	#   #
+	#   # if (any(grepl(fn_in, seperate_db))) {
+	#   #   db_name <- paste0(
+	#   #     db_name,
+	#   #     "_",
+	#   #     gsub("\\.csv", "", fn_in),
+	#   #     ".sqlite"
+	#   #   )
+	#   # } else {
+	#   db_name <- paste0(
+	#     db_base_name,
+	#     ".sqlite"
+	#   )
+	#   # }
+	#   return(db_base_name)
+	# }
 
 	connect <- function(dbname) {
 	  conn <- DBI::dbConnect(
@@ -146,10 +147,10 @@ additor_sqlite_multiple_db <- function(
 
 
   measures <- list.dirs(input, full.names = FALSE, recursive = FALSE)
-  measures <- data.frame(
-    measure = measures,
-    db_name = paste0(db_base_name, "_", measures)
-  )
+  # measures <- data.frame(
+  #   measure = measures,
+  #   db_name = paste0(db_base_name, "_", measures)
+  # )
 
   ##
 
@@ -157,10 +158,10 @@ additor_sqlite_multiple_db <- function(
 
 	# Create tables if they do not exist --------------------------------------------
 
-  for (i in 1:nrow(measures)) {
+  for (i in 1:length(measures)) {
 
     input_files <- list.files(
-      path = file.path(input, measures$measure[i]),
+      path = file.path(input, measures[i]),
       pattern = new_data_pattern,
       full.names = FALSE,
       recursive = FALSE
@@ -170,11 +171,11 @@ additor_sqlite_multiple_db <- function(
 
     for (fn_in in input_files) {
 
-      db_name <- get_db_name(
-        measures$db_name[[i]],
-        fn_in #,
-#        seperate_db
-      )
+#       db_name <- get_db_name(
+#         measures$db_name[[i]],
+#         fn_in #,
+# #        seperate_db
+#       )
 
       progress <- file.path(normalizePath(output), paste0("PREPARING.", fn_in, ".TO.", db_name, ".PREPARING"))
       error    <- file.path(normalizePath(output), paste0("ERROR.PREPARING.", fn_in, ".TO.", db_name, ".PREPARING"))
@@ -182,23 +183,21 @@ additor_sqlite_multiple_db <- function(
 
       conn <- connect( dbname = file.path(output, db_name) )
 
-      tn <- tn_from_fn( fn_in, measures$measure[i] )
+      tn <- tn_from_fn( fn_in, measures[i] )
 
       if (!DBI::dbExistsTable(conn, tn)) {
-	      dat <- utils::read.csv( file.path(input, measures$measure[i], fn_in), nrows = 10 )
+	      dat <- utils::read.csv( file.path(input, measures[i], fn_in), nrows = 10 )
 	      dat <- as.data.frame(dat)
 	      dat$timestamp <- "TIMESTAMP"
 
-	      if ( db_name == paste0(db_base_name, ".sqlite") ) {
-	        names(dat) <- tolower(names(dat))
-	      }
+        names(dat) <- tolower(names(dat))
 
 				DBI::dbCreateTable(
 					conn,
 					name = tn,
 					fields = dat
 				)
-cat(tn, "\n")
+
 				DBI::dbExecute(
 					conn,
 					paste0("CREATE INDEX idx_", tn, "_timetamp on ", tn, "(timestamp);")
@@ -221,10 +220,10 @@ cat(tn, "\n")
 
 	# Write data in one transaction --------------------------------------------
 
-  for (i in 1:nrow(measures)) {
+  for (i in 1:length(measures)) {
 
     input_files <- list.files(
-      path = file.path(input, measures$measure[i]),
+      path = file.path(input, measures[i]),
       pattern = new_data_pattern,
       full.names = FALSE,
       recursive = FALSE
@@ -234,26 +233,24 @@ cat(tn, "\n")
 
     for (fn_in in input_files) {
 
-      db_name <- get_db_name(
-        measures$db_name[[i]],
-        fn_in #,
-#        seperate_db
-      )
+#       db_name <- get_db_name(
+#         measures$db_name[[i]],
+#         fn_in #,
+# #        seperate_db
+#       )
 
       progress <- file.path(normalizePath(output), paste0("ADDING.", fn_in, ".TO.", db_name, ".ADDING"))
       error    <- file.path(normalizePath(output), paste0("ERROR.ADDING.", fn_in, ".TO.", db_name, ".ERROR"))
       file.create(progress)
 
-      tn <- tn_from_fn( fn_in, measures$measure[i] )
+      tn <- tn_from_fn( fn_in, measures[i] )
 
       dat <- utils::read.csv(
-      	file.path(input, measures$measure[i], fn_in)
+      	file.path(input, measures[i], fn_in)
       )
       dat <- as.data.frame(dat)
 
-      if ( db_name == paste0(db_base_name, ".sqlite") ) {
-        names(dat) <- tolower(names(dat))
-      }
+      names(dat) <- tolower(names(dat))
 
       conn <- connect( dbname = file.path(output, db_name) )
 
