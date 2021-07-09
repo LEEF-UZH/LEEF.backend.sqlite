@@ -41,7 +41,7 @@ additor_sqlite_multiple_db <- function(
 	  # "Morph_mvt.csv",
 	  # "Morph_mvt_cropped.csv",
 	  ## flowcam
-	  "algae_traits.csv",
+	  # "algae_traits.csv",
 	  "algae_metadata.csv",
 	  "flowcytometer_ungated.csv"
 	)
