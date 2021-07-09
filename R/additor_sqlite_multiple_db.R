@@ -38,8 +38,8 @@ additor_sqlite_multiple_db <- function(
 	  ## bemovi
 	  "Master.csv",
 	  "Master_cropped.csv",
-	  "Morph_mvt.csv",
-	  "Morph_mvt_cropped.csv",
+	  # "Morph_mvt.csv",
+	  # "Morph_mvt_cropped.csv",
 	  ## flowcam
 	  "algae_traits.csv",
 	  "algae_metadata.csv",
@@ -51,24 +51,24 @@ additor_sqlite_multiple_db <- function(
 
 	# Helper function ---------------------------------------------------------
 
-	# get_db_name <- function( db_name, fn_in, seperate_db ) {
-	#   # fn_in <- tolower(gsub("\\.csv", "", fn_in))
-	#   #
-	#   # if (any(grepl(fn_in, seperate_db))) {
-	#   #   db_name <- paste0(
-	#   #     db_name,
-	#   #     "_",
-	#   #     gsub("\\.csv", "", fn_in),
-	#   #     ".sqlite"
-	#   #   )
-	#   # } else {
-	#   db_name <- paste0(
-	#     db_base_name,
-	#     ".sqlite"
-	#   )
-	#   # }
-	#   return(db_base_name)
-	# }
+  # get_db_name <- function( db_name, fn_in, seperate_db ) {
+  #   fn_in <- tolower(gsub("\\.csv", "", fn_in))
+  #
+  #   if (any(grepl(fn_in, seperate_db))) {
+  #     db_name <- paste0(
+  #       db_name,
+  #       "_",
+  #       gsub("\\.csv", "", fn_in),
+  #       ".sqlite"
+  #     )
+  #   } else {
+  #     db_name <- paste0(
+  #       db_base_name,
+  #       ".sqlite"
+  #     )
+  #     # }
+  #     return(db_base_name)
+  #   }
 
 	connect <- function(dbname) {
 	  conn <- DBI::dbConnect(
