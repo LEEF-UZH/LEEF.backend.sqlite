@@ -70,41 +70,41 @@ additor_sqlite_multiple_db <- function(
   #     return(db_base_name)
   #   }
 
-	connect <- function(dbname) {
-	  conn <- DBI::dbConnect(
-	    drv = RSQLite::SQLite(),
-	    dbname = dbname
-	  )
-	  file.create(
-	    file.path(
-	      normalizePath(output),
-	      paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
-	    )
-	  )
-	  return(conn)
-	}
+ connect <- function(dbname) {
+   conn <- DBI::dbConnect(
+     drv = RSQLite::SQLite(),
+     dbname = dbname
+   )
+   file.create(
+     file.path(
+       normalizePath(output),
+       paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
+     )
+   )
+   return(conn)
+ }
 
-	disconnect <- function(conn) {
-	  dbname <- basename(conn@dbname)
-	  DBI::dbDisconnect(conn)
-	  unlink(
-	    file.path(
-	      normalizePath(output),
-	      paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
-	    )
-	  )
-	}
+ disconnect <- function(conn) {
+   dbname <- basename(conn@dbname)
+   DBI::dbDisconnect(conn)
+   unlink(
+     file.path(
+       normalizePath(output),
+       paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
+     )
+   )
+ }
 
-  tn_from_fn <- function(fn, measure) {
-  	tn <- tolower(gsub("\\.csv", "", fn))
-  	if (is.null(tn_postfix)) {
-			tn <- paste0(measure, "__", tn)
-		} else {
-			tn <- paste0(measure, "_", tn_postfix, "__", tn)
-		}
-    tn <- gsub("\\.", "_", tn)
-		return(tn)
-  }
+ tn_from_fn <- function(fn, measure) {
+   tn <- tolower(gsub("\\.csv", "", fn))
+   if (is.null(tn_postfix)) {
+     tn <- paste0(measure, "__", tn)
+   } else {
+     tn <- paste0(measure, "_", tn_postfix, "__", tn)
+   }
+   tn <- gsub("\\.", "_", tn)
+   return(tn)
+ }
 
   # create directory structure if it does not exist -------------------------
 
@@ -123,8 +123,7 @@ additor_sqlite_multiple_db <- function(
 
   file.create(progress)
 
-  on.exit(
-    {
+  on.exit({
       # ROLLBACK TRANSACTION ----------------------------------------------------
       if (!is.null(conn)) {
         if (DBI::dbIsValid(conn)) {
@@ -144,7 +143,6 @@ additor_sqlite_multiple_db <- function(
 
 
 # Read measures --------------------------------------------------------------------
-
 
   measures <- list.dirs(input, full.names = FALSE, recursive = FALSE)
   # measures <- data.frame(
