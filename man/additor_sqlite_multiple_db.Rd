@@ -15,5 +15,7 @@ additor_sqlite_multiple_db(input, output, tn_postfix = NULL)
 returns invisible\code{TRUE}
 }
 \description{
-Add new data to the database. If a table exist, append it, if not, create a new table with the name \code{name} if \code{create_new_table = TRUE}.
+Add new data to the database.
+If a table exist, append it, if not,
+create a new table with the name \code{name} if \code{create_new_table = TRUE}.
 }
