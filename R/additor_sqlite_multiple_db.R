@@ -38,6 +38,7 @@ additor_sqlite_multiple_db <- function(input,
     ## bemovi
     "Master.csv",
     "Master_cropped.csv",
+    "Master_non_cropped.csv",
     # "Morph_mvt.csv",
     # "Morph_mvt_cropped.csv",
     ## flowcam

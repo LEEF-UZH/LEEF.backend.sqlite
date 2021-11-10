@@ -1,7 +1,7 @@
 Package: LEEF.backend.sqlite
 Type: Package
 Title: Add Extracted Data to SQLite Backend
-Version: 0.8.22
+Version: 0.8.23
 Authors@R: c(
   person(given = "Rainer M.", family = "Krug", email = "Rainer.Krug@uzh.ch", role = c("aut", "cre")),
   person("SNF Project 310030_188431", role = "fnd")
@@ -16,7 +16,7 @@ Imports:
   yaml
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     rmarkdown
