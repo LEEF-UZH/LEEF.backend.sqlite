@@ -1,20 +1,17 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "LEEF.backend.sqlite",
   "description": "Adds the data extracted from the raw data and adds them to multiple SQLite databases. These databases are custom split for LEEF!!!",
   "name": "LEEF.backend.sqlite: Add Extracted Data to SQLite Backend",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.8.23",
+  "version": "0.8.24",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.1.1 (2021-08-10)",
+  "runtimePlatform": "R version 4.1.2 (2021-11-01)",
   "author": [
     {
       "@type": "Person",
@@ -23,8 +20,6 @@
       "email": "Rainer.Krug@uzh.ch"
     }
   ],
-  "contributor": {},
-  "copyrightHolder": {},
   "funder": [
     {
       "@type": "Organization",
@@ -65,14 +60,14 @@
       "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
     }
   ],
-  "softwareRequirements": [
-    {
+  "softwareRequirements": {
+    "1": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 3.5.0"
     },
-    {
+    "2": {
       "@type": "SoftwareApplication",
       "identifier": "DBI",
       "name": "DBI",
@@ -84,7 +79,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=DBI"
     },
-    {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "RSQLite",
       "name": "RSQLite",
@@ -96,7 +91,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=RSQLite"
     },
-    {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "yaml",
       "name": "yaml",
@@ -107,9 +102,10 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=yaml"
-    }
-  ],
+    },
+    "SystemRequirements": null
+  },
+  "fileSize": "64.887KB",
   "codeRepository": "https://github.com/LEEF-UZH/LEEF.backend.sqlite",
-  "readme": "https://github.com/LEEF-UZH/LEEF.backend.sqlite/blob/master/Readme.md",
-  "fileSize": "44.969KB"
+  "readme": "https://github.com/LEEF-UZH/LEEF.backend.sqlite/blob/master/Readme.md"
 }
