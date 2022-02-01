@@ -25,11 +25,11 @@ new_RRD <- function(
     )
   )
 
-  sql <- readLines(system.file("LEEF.RRD.scheme.sql", package = "LEEF.backend.sqlite"))
+  sql <- readLines(system.file("LEEF.RRD.scheme.sqlcmd", package = "LEEF.backend.sqlite"))
   sql <- paste0(sql, collapse = " ")
   sql <- strsplit(sql, ";")
 
-  result <- lapply(
+  result <- sapply(
     sql[[1]],
     function(s) {
       DBI::dbExecute(conn, s)
