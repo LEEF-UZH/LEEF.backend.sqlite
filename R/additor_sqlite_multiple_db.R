@@ -236,6 +236,7 @@ db_name_from_fn <- function(
 #' @param dbname name of database
 #'
 #' @return connection object
+#' @importFrom DBI dbConnect dbGetQuery
 #' @export
 #'
 #' @examples
@@ -246,6 +247,14 @@ connect <- function(
     drv = RSQLite::SQLite(),
     dbname = dbname
   )
+
+  # Set PRAGMAS for minimizing disk use and maximize performance ------------
+  ## Use memory instead of discs for temporary store
+  DBI::dbGetQuery(conn, "PRAGMA temp_store=2")
+
+  ## Set journal mode to memory. This is slightly unsafer but should not be a problem here
+  DBI::dbGetQuery(conn, "PRAGMA journal_mode=MEMORY")
+
   file.create(
     file.path(
       normalizePath(dirname(dbname)),
@@ -261,6 +270,7 @@ connect <- function(
 #' @param conn
 #'
 #' @return
+#' @importFrom DBI dbDisconnect
 #' @export
 #'
 #' @examples
