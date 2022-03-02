@@ -236,7 +236,7 @@ db_name_from_fn <- function(
 #' @param dbname name of database
 #'
 #' @return connection object
-#' @importFrom DBI dbConnect dbGetQuery
+#' @importFrom DBI dbConnect dbExecute
 #' @export
 #'
 #' @examples
@@ -250,10 +250,10 @@ connect <- function(
 
   # Set PRAGMAS for minimizing disk use and maximize performance ------------
   ## Use memory instead of discs for temporary store
-  DBI::dbGetQuery(conn, "PRAGMA temp_store=2")
+  DBI::dbExecute(conn, "PRAGMA temp_store=2")
 
   ## Set journal mode to memory. This is slightly unsafer but should not be a problem here
-  DBI::dbGetQuery(conn, "PRAGMA journal_mode=MEMORY")
+  DBI::dbExecute(conn, "PRAGMA journal_mode=MEMORY")
 
   file.create(
     file.path(
