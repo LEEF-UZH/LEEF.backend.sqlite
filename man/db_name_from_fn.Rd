@@ -13,9 +13,6 @@ db_name_from_fn(fn, dbname, seperate_db)
 
 \item{seperate_db}{}
 }
-\value{
-
-}
 \description{
 Get dbname from file name
 }

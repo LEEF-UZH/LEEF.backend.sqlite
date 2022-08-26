@@ -9,9 +9,6 @@ disconnect(conn)
 \arguments{
 \item{conn}{}
 }
-\value{
-
-}
 \description{
 Also delete status report file in the dabname directory
 }

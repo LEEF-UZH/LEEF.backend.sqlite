@@ -9,9 +9,6 @@ new_RRD(dbname)
 \arguments{
 \item{dbname}{the path and name of the database. Must not exist.}
 }
-\value{
-
-}
 \description{
 Create a new database following the scheme used for the LEEF.RRD database
 }
