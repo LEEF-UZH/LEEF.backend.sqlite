@@ -6,6 +6,7 @@
 #'
 #' @param input directory from which to read the data
 #' @param output directory to which to write the data to
+#' @param tn_postfix postfix to the table name
 #'
 #' @return returns invisible\code{TRUE}
 #'

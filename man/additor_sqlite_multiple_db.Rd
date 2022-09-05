@@ -10,6 +10,8 @@ additor_sqlite_multiple_db(input, output, tn_postfix = NULL)
 \item{input}{directory from which to read the data}
 
 \item{output}{directory to which to write the data to}
+
+\item{tn_postfix}{postfix to the table name}
 }
 \value{
 returns invisible\code{TRUE}
