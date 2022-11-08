@@ -1,7 +1,7 @@
-Package: LEEF.backend.sqlite
+Package: LEEF.2.backend.sqlite
 Type: Package
 Title: Add Extracted Data to SQLite Backend
-Version: 0.8.32
+Version: 0.9.0
 Authors@R: c(
   person(given = "Rainer M.", family = "Krug", email = "Rainer.Krug@uzh.ch", role = c("aut", "cre")),
   person("SNF Project 310030_188431", role = "fnd")

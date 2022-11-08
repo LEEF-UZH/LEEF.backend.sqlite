@@ -26,9 +26,24 @@ additor_sqlite_multiple_db <- function(input,
   # Some variable definitions -----------------------------------------------
 
   include_files <- c(
+    ## bemovi_mag_25
+    "mean_density_per_ml.csv",
+    "mean_density_per_ml_cropped.csv",
+    "mean_density_per_ml_non_cropped.csv",
+    "morph_mvt.csv",
+    "morph_mvt_cropped.csv",
+    "morph_mvt_non_cropped.csv",
+
+    ## bemovi_mag_16
+    "mean_density_per_ml.csv",
+    "morph_mvt.csv",
+
+    ## conductivity
+    "conductivity.csv",
+
     ## flowcam
     "algae_density.csv",
-    "algae_traits.csv",
+    "algae_traits.rds",
 
     ## flowcytometer
     "flowcytometer_density.csv",
@@ -39,20 +54,8 @@ additor_sqlite_multiple_db <- function(input,
     "manualcount_density.csv",
 
     ## o2meter
-    "o2meter__o2meter.csv",
+    "o2meter__o2meter.csv"
 
-    ## bemovi_mag_25
-    "mean_density_per_ml.csv",
-    "mean_density_per_ml_cropped.csv",
-    "mean_density_per_ml_non_cropped.csv",
-    "morph_mvt.csv",
-    "morph_mvt_cropped.csv",
-    "morph_mvt_non_cropped.csv",
-    ##
-
-    ## bemovi_mag_16
-    "mean_density_per_ml.csv",
-    "morph_mvt.csv"
   )
 
   db_base_name <- "LEEF.RRD"

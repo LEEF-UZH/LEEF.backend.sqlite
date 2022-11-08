@@ -1,17 +1,17 @@
 {
   "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
-  "identifier": "LEEF.backend.sqlite",
+  "identifier": "LEEF.2.backend.sqlite",
   "description": "Adds the data extracted from the raw data and adds them to multiple SQLite databases. These databases are custom split for LEEF!!!",
-  "name": "LEEF.backend.sqlite: Add Extracted Data to SQLite Backend",
+  "name": "LEEF.2.backend.sqlite: Add Extracted Data to SQLite Backend",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.8.32",
+  "version": "0.9.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
+  "runtimePlatform": "R version 4.2.2 (2022-10-31)",
   "author": [
     {
       "@type": "Person",
@@ -105,7 +105,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "68.775KB",
+  "fileSize": "68.871KB",
   "codeRepository": "https://github.com/LEEF-UZH/LEEF.backend.sqlite",
   "readme": "https://github.com/LEEF-UZH/LEEF.backend.sqlite/blob/master/Readme.md"
 }
