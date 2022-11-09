@@ -5,10 +5,10 @@
 #' @export
 #'
 register <- function() {
-  if (is.null(system.file(package = "LEEF"))) {
+  if (is.null(system.file(package = "LEEF.2"))) {
     stop("This function requres the package to be installed!")
   }
-  LEEF::add_additor( additor_sqlite_multiple_db )
+  LEEF.2::add_additor( additor_sqlite_multiple_db )
   ##
   invisible(TRUE)
 }
