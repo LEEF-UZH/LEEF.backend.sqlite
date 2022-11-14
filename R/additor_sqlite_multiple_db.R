@@ -322,7 +322,7 @@ disconnect <- function(conn) {
   unlink(
     file.path(
       normalizePath(dirname(dbname)),
-      paste0("CONNECTED.", basename(conn@dbname), ".CONNECTED")
+      paste0("CONNECTED.", dbname, ".CONNECTED")
     )
   )
   invisible(TRUE)
