@@ -131,10 +131,9 @@ additor_sqlite_multiple_db <- function(input,
       names(dat) <- tolower(names(dat))
 
       if (!DBI::dbExistsTable(conn, tn)) {
-        dat <- as.data.frame(dat)[1:10, ]
         db_create_table(
           conn = conn,
-          dat = dat,
+          dat = dat[1:2,],
           table = tn
         )
       }
@@ -237,26 +236,24 @@ tn_from_fn <- function(
 db_name_from_fn <- function(
   fn,
   dbname,
-  seperate_db
+  traits_db
 ) {
-  stop("Not Tested!!!")
   fn <- tolower(gsub("\\.csv", "", fn))
 
-  if (any(grepl(fn, seperate_db))) {
-    dbname <- paste0(
-      dbname,
-      "_",
-      gsub("\\.csv", "", fn),
-      ".sqlite"
-    )
+  if (grepl("flowcytometer_traits", fn)){
+    dbname <- "flowcytometer_traits"
+  } else if (grepl("algae_traits", fn)){
+    dbname <- "flowcam_traits"
   } else {
-    dbname <- paste0(
-      dbname,
-      ".sqlite"
-    )
-    # }
-    return(dbname)
+    dbname <- dbname
   }
+
+  dbname <- paste0(
+    dbname,
+    ".sqlite"
+  )
+
+  return(dbname)
 }
 
 #' Open connection to db

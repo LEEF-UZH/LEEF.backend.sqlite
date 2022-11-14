@@ -4,7 +4,7 @@
 \alias{db_name_from_fn}
 \title{Get dbname from file name}
 \usage{
-db_name_from_fn(fn, dbname, seperate_db)
+db_name_from_fn(fn, dbname, traits_db)
 }
 \arguments{
 \item{fn}{file name}
