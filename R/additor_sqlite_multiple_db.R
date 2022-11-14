@@ -55,11 +55,27 @@ additor_sqlite_multiple_db <- function(input,
 
     ## o2meter
     "o2meter__o2meter.csv"
-
   )
 
-  db_base_name <- "LEEF.RRD"
-  db_name <- paste0(db_base_name, ".sqlite")
+  traits_data <- c(
+    ## bemovi_mag_25
+    "morph_mvt.csv",
+    "morph_mvt_cropped.csv",
+    "morph_mvt_non_cropped.csv",
+
+    ## bemovi_mag_16
+    "morph_mvt.csv",
+
+
+    ## flowcam
+    "algae_traits.rds",
+
+    ## flowcytometer
+    "flowcytometer_traits_bacteria.rds",
+    "flowcytometer_traits_algae.rds"
+  )
+
+  db_base_name <- "LEEF-2.RRD"
 
   # create directory structure if it does not exist -------------------------
 
@@ -103,7 +119,6 @@ additor_sqlite_multiple_db <- function(input,
   unlink(progress)
 
   # Write data in individual transaction --------------------------------------------
-  conn <- connect(dbname = file.path(output, db_name))
 
   for (i in 1:length(measures)) {
     input_files <- get_inputfiles(
@@ -113,6 +128,10 @@ additor_sqlite_multiple_db <- function(input,
     )
 
     for (fn_in in input_files) {
+
+      db_name <- db_name_from_fn(fn = fn_in, traits_fns = traits_data, dbname = db_base_name)
+
+      conn <- connect(dbname = file.path(output, db_name))
 
       progress <- file.path(normalizePath(output), paste0("ADDING.", fn_in, ".TO.", db_name, ".ADDING"))
       error <- file.path(normalizePath(output), paste0("ERROR.ADDING.", fn_in, ".TO.", db_name, ".ERROR"))
@@ -158,12 +177,12 @@ additor_sqlite_multiple_db <- function(input,
 
       # END TRANSACTION ------------------------------------------------------
 
+      disconnect(conn)
 
       unlink(progress)
     }
   }
 
-  disconnect(conn)
 
 
   # Finalise stuff ----------------------------------------------------------
@@ -226,6 +245,7 @@ tn_from_fn <- function(
 #' Get dbname from file name
 #'
 #' @param fn file name
+#' @param traits_fns vector of files, which should be in the traits database
 #' @param dbname default dbname
 #' @param seperate_db
 #'
@@ -235,17 +255,13 @@ tn_from_fn <- function(
 #' @examples
 db_name_from_fn <- function(
   fn,
-  dbname,
-  traits_db
+  traits_fns,
+  dbname
 ) {
   fn <- tolower(gsub("\\.csv", "", fn))
 
-  if (grepl("flowcytometer_traits", fn)){
-    dbname <- "flowcytometer_traits"
-  } else if (grepl("algae_traits", fn)){
-    dbname <- "flowcam_traits"
-  } else {
-    dbname <- dbname
+  if (grepl(fn, traits_fns)){
+    dbname <- paste0(dbname, ".traits")
   }
 
   dbname <- paste0(

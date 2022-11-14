@@ -4,10 +4,12 @@
 \alias{db_name_from_fn}
 \title{Get dbname from file name}
 \usage{
-db_name_from_fn(fn, dbname, traits_db)
+db_name_from_fn(fn, traits_fns, dbname)
 }
 \arguments{
 \item{fn}{file name}
+
+\item{traits_fns}{vector of files, which should be in the traits database}
 
 \item{dbname}{default dbname}
 
