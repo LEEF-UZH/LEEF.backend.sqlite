@@ -259,8 +259,9 @@ db_name_from_fn <- function(
   dbname
 ) {
   fn <- tolower(gsub("\\.csv", "", fn))
+  fn <- tolower(gsub("\\.rds", "", fn))
 
-  if (any(grepl(fn, traits_fns))){
+  if (any(grepl(fn, tolower(traits_fns)))){
     dbname <- paste0(dbname, ".traits")
   }
 
