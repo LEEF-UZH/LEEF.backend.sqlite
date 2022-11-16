@@ -26,17 +26,17 @@ additor_sqlite_multiple_db <- function(input,
   # Some variable definitions -----------------------------------------------
 
   include_files <- c(
-    ## bemovi_mag_25
-    "mean_density_per_ml.csv",
-    "mean_density_per_ml_cropped.csv",
-    "mean_density_per_ml_non_cropped.csv",
-    "morph_mvt.csv",
-    "morph_mvt_cropped.csv",
-    "morph_mvt_non_cropped.csv",
-
     ## bemovi_mag_16
-    "mean_density_per_ml.csv",
-    "morph_mvt.csv",
+    "Mean_density_per_ml.csv",
+    "Morph_mvt.csv",
+
+    ## bemovi_mag_25
+    "Mean_density_per_ml.csv",
+    "Mean_density_per_ml_cropped.csv",
+    "Mean_density_per_ml_non_cropped.csv",
+    "Morph_mvt.csv",
+    "Morph_mvt_cropped.csv",
+    "Morph_mvt_non_cropped.csv",
 
     ## conductivity
     "conductivity.csv",
@@ -54,18 +54,17 @@ additor_sqlite_multiple_db <- function(input,
     "manualcount_density.csv",
 
     ## o2meter
-    "o2meter__o2meter.csv"
+    "o2meter.csv"
   )
 
   traits_data <- c(
-    ## bemovi_mag_25
-    "morph_mvt.csv",
-    "morph_mvt_cropped.csv",
-    "morph_mvt_non_cropped.csv",
-
     ## bemovi_mag_16
-    "morph_mvt.csv",
+    "Morph_mvt.csv",
 
+    ## bemovi_mag_25
+    "Morph_mvt.csv",
+    "Morph_mvt_cropped.csv",
+    "Morph_mvt_non_cropped.csv",
 
     ## flowcam
     "algae_traits.rds",
@@ -211,6 +210,7 @@ get_inputfiles <- function(
     full.names = FALSE,
     recursive = FALSE
   )
+
 
   return(input_files[(input_files %in% include_files)])
 }
